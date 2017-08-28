@@ -7,7 +7,7 @@ $global:url:order = $global:url + "/order/certificate"
 function Cert-Issue
 {    
     Param(
-        [Parameter(Mandatory=$true,HelpMessage="General Parameters")]
+        [Parameter(HelpMessage = "An API Key must be supplied", Mandatory = $true)]
         [System.Collections.Hashtable]$apikey        
     )
     
@@ -20,16 +20,15 @@ function Cert-Issue
         
         #set reqeust headers using api key passed into the Cert-Issue command
         $headers = @{
-            "X-DC-DEVKEY"=$apikey.key            
-            #"Accept"="application/json"
+            "X-DC-DEVKEY"=$apikey.key
         }
         
         #supply cert details
         $server_platform = "-1"                                            #refer to https://www.digicert.com/services/v2/documentation/appendix-server-platforms
         $signature_hash = "sha256"                                         #sha256, sha384, or sha512
-        $organization_id = 12345                                           #replace with your org id; retrieve org id from https://www.digicert.com/services/v2/documentation/organization/organization-list
+        $organization_id = 123456                                          #replace with your org id; retrieve org id from https://www.digicert.com/services/v2/documentation/organization/organization-list
         $validity_years = 1                                                #use https://www.digicert.com/services/v2/documentation/product/product-details with the product's name_id to determine allowed validity years
-        $comments = "Order created via Bulk Cert Request"                  #optional note set on the request, to be reviewed by admin when approving or rejecting the request
+        $comments = "Order created via PowerShell Script"                  #optional note set on the request, to be reviewed by admin when approving or rejecting the request
         $disable_issuance_email = $true                                    #if true, the certificate, once issued, will _not_ be emailed to the contact on the org 
         $common_name = "mydomain.com"                                      #replace with your common name value
         $csr = "CSR_HERE"                                                  #replace with your CSR, all one line, including -----BEGIN and END----- tags   
@@ -79,8 +78,8 @@ function CC-Error( [Exception] $exception )
 # SIG # Begin signature block
 # MIId7QYJKoZIhvcNAQcCoIId3jCCHdoCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU7tqcnzc29t0kyRAwPt/JvIiO
-# 2OOgghkfMIIFNTCCBB2gAwIBAgIQCtvOfO8MtmSb4KtGs1D3YjANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUAXDwG4wYoBfahiae6DuC3Jf/
+# 8F+gghkfMIIFNTCCBB2gAwIBAgIQCtvOfO8MtmSb4KtGs1D3YjANBgkqhkiG9w0B
 # AQUFADBvMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMS4wLAYDVQQDEyVEaWdpQ2VydCBBc3N1cmVk
 # IElEIENvZGUgU2lnbmluZyBDQS0xMB4XDTE3MDgwNzAwMDAwMFoXDTE4MDgxNzEy
@@ -219,22 +218,22 @@ function CC-Error( [Exception] $exception )
 # aWdpQ2VydCBBc3N1cmVkIElEIENvZGUgU2lnbmluZyBDQS0xAhAK28587wy2ZJvg
 # q0azUPdiMAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkG
 # CSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEE
-# AYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTW8G9L55n+M/tCRto+tilXpcf8IjANBgkq
-# hkiG9w0BAQEFAASCAQCpzNBjjv7hT6kx8bNenE903ObN+TQRud0WXqb3hu+KoWoi
-# 4USUfqn1IH8F2ESVC48J+AR5Batsxh+MJEK842xbSVMyXi7p6/Fw5c+ZA+ZUs44x
-# a4czplCQhUnzJ22aFRacLoGxj2DZPlHsAOos0Wlh5/qzWH9c36Z+fuzMYhCCfv8W
-# hsuJxhyVx1XEzFOKdOkn2WtPbXu0Y29b0TnH42cU4D8XfpcL+zk75XzNprk+Nwmv
-# Ou/Yi2f+NLtbXY5O5e57BQawZIQ8idi9zKm9cHSvsJp2v1wqh6cvsNnlPrOgQpFT
-# VQYyeRVk5YddaEuLCodKtxYMVOadK/zTWhySnCS/oYICDzCCAgsGCSqGSIb3DQEJ
+# AYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTtoMUWmDozO512nBSkYjNTsRaoUzANBgkq
+# hkiG9w0BAQEFAASCAQAqFXovhjTaK76g2dx4cTnGeZV4HW18ZmPUimecC2T884qk
+# rSSUQiYZAP6GU1K27KuFSSbzNhqGmq0+hAUkgjVKwFrfc+mbSXbZ6R0dNFYrSbAk
+# hQbtPADORlMNtKGCE19hBz6iiX4TTBECikV/sRfzLQ+7LKixBpnf9COb6naoWXTJ
+# JGwK9oe7H9SQzCRpoNm8E6P82Aihl7yKpzlyTUesRxr99tBQtpltIzmsDxWDHDv8
+# WRnbrf88sEC2fTxKFS3MO2hu4TX+2cWoIbPPMuoV5V9e/EqYiLNjchLR2DKwV8rj
+# JkRqfgqPQW4kz9Jj+w2HN1M69VbjSW8FhgF3QJrRoYICDzCCAgsGCSqGSIb3DQEJ
 # BjGCAfwwggH4AgEBMHYwYjELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0
 # IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEhMB8GA1UEAxMYRGlnaUNl
 # cnQgQXNzdXJlZCBJRCBDQS0xAhADAZoCOv9YsWvW1ermF/BmMAkGBSsOAwIaBQCg
 # XTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xNzA4
-# MjgyMDI2NTVaMCMGCSqGSIb3DQEJBDEWBBR6L2l5AXAR7oXTsMVnkBwcAAVFQTAN
-# BgkqhkiG9w0BAQEFAASCAQAEC76/Lnvnz6MIQNZs0UdhrWe1TkOpZQPEnuqxZT5q
-# DwOr+7C2PZ77wVdagmZ+LNzOB6PV/JOMo6dFeJ2Ih1GRtIys4RQ1Ex9IDrjgEHsA
-# FZiU/G3UnpPllhowteTX27+o8HZV0bVa5vnxLQwJEie403sykjvt9nJzDWJQDLNW
-# ZTvkueNz4DE9VauMrpu9uAWCVPgztRNgHCj5j4UfivoH5C/ZhCHzllg8Hye69ihY
-# +8ZZQLwH4LtSZBIHXZV7uX/CUfxqPTg1OgOoCBCjt7RIL9buteDssgNCJOtH6IpT
-# ZFE31DDIrrBqEG25rzh7g3v2Ivz2uPxt5VOkbhDKnmyf
+# MjgyMTQzMDVaMCMGCSqGSIb3DQEJBDEWBBQsBVhU7/RzLB1eKQBNCZbaVY28LDAN
+# BgkqhkiG9w0BAQEFAASCAQBpozZW/8oEkmyW4tyM87e02si6t456CCSBvwDfih2D
+# vdPGW+5xBLfVQRsB+JO9qSkKrx7au8rENSf3Z483YCNarZwT2sVHhq+uTKRYWVEt
+# mlpc8qYXHEFO46t7Ug4jefinEKZ9uivVcBUO+07sX4QD61enzdTFOm1QRzRG1gLs
+# Ey6iOXcvxY8DwZVlthtMGtj4iXVKxmtvzuFKyBy1qimA0SFJxbJCyzpiqozWbMEv
+# 0oFmWSv0xiWtlH3rdEVZFC6nLbAuo3D/4x9+XkxNsIcnkLyAd+L/MH1MpRb00U1p
+# tsEJP7qvqqQ/mIxK4JmeVKdlRGXtzPJRdcqL4hLwVrSY
 # SIG # End signature block
